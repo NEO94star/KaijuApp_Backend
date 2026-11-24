@@ -1,4 +1,5 @@
 # Kaiju Backend
+Backend de la app Kaiju con fines académicos.
 
 API REST de inventario en Spring Boot para PostgreSQL/Amazon Aurora RDS.
 
