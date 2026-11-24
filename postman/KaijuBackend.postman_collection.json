@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "Kaiju Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productoId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/actuator/health"
+      }
+    },
+    {
+      "name": "Listar productos",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/productos"
+      }
+    },
+    {
+      "name": "Crear producto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.id) pm.collectionVariables.set('productoId', body.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Godzilla\",\n  \"categoria\": \"Figura\",\n  \"precio\": 19990,\n  \"cantidadDisponible\": 10,\n  \"stockMinimo\": 5,\n  \"sucursal\": \"Central\",\n  \"imagenUri\": null\n}"
+        },
+        "url": "{{baseUrl}}/api/productos"
+      }
+    },
+    {
+      "name": "Listar sucursales",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/sucursales"
+      }
+    },
+    {
+      "name": "Listar productos por sucursal",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/productos?sucursal=Central"
+      }
+    },
+    {
+      "name": "Stock bajo por sucursal",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/sucursales/Central/stock-bajo"
+      }
+    },
+    {
+      "name": "Estado sincronización sucursales",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/sincronizacion"
+      }
+    },
+    {
+      "name": "Registrar revisión sucursal",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cambiosReales\": true\n}"
+        },
+        "url": "{{baseUrl}}/api/sincronizacion/Central/revisar"
+      }
+    },
+    {
+      "name": "Enviar lote desde Room",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sucursal\": \"San Bernardo\",\n  \"operaciones\": [\n    {\n      \"accion\": \"ADD\",\n      \"productoId\": \"producto-local-1\",\n      \"nombre\": \"Godzilla\",\n      \"categoria\": \"Figura\",\n      \"precio\": 19990,\n      \"cantidadDisponible\": 10,\n      \"stockMinimo\": 5,\n      \"sucursal\": \"San Bernardo\",\n      \"imagenUri\": null,\n      \"cantidad\": null\n    },\n    {\n      \"accion\": \"SALE\",\n      \"productoId\": \"producto-local-1\",\n      \"nombre\": null,\n      \"categoria\": null,\n      \"precio\": null,\n      \"cantidadDisponible\": null,\n      \"stockMinimo\": null,\n      \"sucursal\": \"San Bernardo\",\n      \"imagenUri\": null,\n      \"cantidad\": 2\n    }\n  ]\n}"
+        },
+        "url": "{{baseUrl}}/api/sincronizacion/lote"
+      }
+    },
+    {
+      "name": "Obtener producto",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/productos/{{productoId}}"
+      }
+    },
+    {
+      "name": "Actualizar producto",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Godzilla\",\n  \"categoria\": \"Figura\",\n  \"precio\": 20990,\n  \"cantidadDisponible\": 10,\n  \"stockMinimo\": 5,\n  \"sucursal\": \"Central\",\n  \"imagenUri\": null\n}"
+        },
+        "url": "{{baseUrl}}/api/productos/{{productoId}}"
+      }
+    },
+    {
+      "name": "Registrar venta",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cantidad\": 2\n}"
+        },
+        "url": "{{baseUrl}}/api/productos/{{productoId}}/ventas"
+      }
+    },
+    {
+      "name": "Listar movimientos",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/productos/{{productoId}}/movimientos"
+      }
+    },
+    {
+      "name": "Eliminar producto",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/productos/{{productoId}}"
+      }
+    }
+  ]
+}

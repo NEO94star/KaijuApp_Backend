@@ -1,0 +1,38 @@
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}?sslmode=${DB_SSLMODE:require}}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: kaiju_app
+  flyway:
+    enabled: true
+    default-schema: kaiju_app
+    schemas: kaiju_app
+    create-schemas: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+    operations-sorter: method
+    tags-sorter: alpha
+
+app:
+  public-base-url: ${PUBLIC_BASE_URL:http://184.192.5.101:8080}

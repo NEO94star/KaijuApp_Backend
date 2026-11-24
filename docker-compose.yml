@@ -1,0 +1,7 @@
+services:
+  kaiju-backend:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-8080}:8080"
