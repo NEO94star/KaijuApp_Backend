@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ProductoRepository extends JpaRepository<Producto, String> {
     List<Producto> findBySucursalIgnoreCaseOrderByNombreAsc(String sucursal);
+    java.util.Optional<Producto> findFirstBySucursalIgnoreCaseAndNombreIgnoreCase(
+        String sucursal, String nombre);
 
     @Query("select distinct p.sucursal from Producto p order by p.sucursal")
     List<String> listarSucursales();

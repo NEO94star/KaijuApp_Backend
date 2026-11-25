@@ -66,11 +66,23 @@ public class SincronizacionService {
                 String accion = operation.accion().trim().toUpperCase();
                 switch (accion) {
                     case "ADD", "UPDATE", "UPSERT" -> {
-                        Producto producto = operation.productoId() == null
-                            ? new Producto()
-                            : productoRepository.findById(operation.productoId()).orElse(new Producto());
-                        producto.setId(operation.productoId() == null
-                            ? UUID.randomUUID().toString() : operation.productoId());
+                        Producto producto;
+                        boolean nuevo;
+                        if (operation.productoId() == null) {
+                            producto = productoRepository
+                                .findFirstBySucursalIgnoreCaseAndNombreIgnoreCase(
+                                    sucursal, operation.nombre())
+                                .orElseGet(Producto::new);
+                            nuevo = producto.getId() == null;
+                            if (nuevo) {
+                                producto.setId(UUID.randomUUID().toString());
+                            }
+                        } else {
+                            producto = productoRepository.findById(operation.productoId())
+                                .orElseGet(Producto::new);
+                            nuevo = producto.getId() == null;
+                            producto.setId(operation.productoId());
+                        }
                         producto.setNombre(operation.nombre().trim());
                         producto.setCategoria(operation.categoria() == null || operation.categoria().isBlank()
                             ? "General" : operation.categoria().trim());
@@ -80,8 +92,10 @@ public class SincronizacionService {
                         producto.setSucursal(sucursal);
                         producto.setImagenUri(operation.imagenUri());
                         productoRepository.save(producto);
-                        registrarMovimiento(producto.getId(), "ENTRADA",
-                            operation.cantidadDisponible());
+                        if (nuevo) {
+                            registrarMovimiento(producto.getId(), "ENTRADA",
+                                operation.cantidadDisponible());
+                        }
                         aplicadas++;
                     }
                     case "SALE", "VENTA" -> {
